@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package name.svetov.grpc;
+
+message DialogueSearchRq {
+  string id = 1;
+}
+
+message DialogueCreateRq {
+  repeated string participants = 1;
+}
+
+message DialogueRs {
+  string id = 1;
+  repeated string participants = 2;
+  string created_date = 3;
+  string updated_date = 4;
+}
+
+service DialogueService {
+  rpc Get(DialogueSearchRq) returns (DialogueRs);
+  rpc Create(DialogueCreateRq) returns (DialogueRs);
+}
+
+
+

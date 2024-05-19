@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package name.svetov.grpc;
+
+message DialogueMessageSearchRq {
+  string dialogue_id = 1;
+}
+
+message DialogueMessageCreateRq {
+  string dialogue_id = 1;
+  string author_id = 2;
+  string recipient_id = 3;
+  string payload = 4;
+}
+
+message DialogueMessageRs {
+  string id = 1;
+  string dialogue_id = 2;
+  string author_id = 3;
+  string recipient_id = 4;
+  string payload = 5;
+  string created_date = 6;
+  string updated_date = 7;
+}
+
+message DialogueMessageSearchRs {
+  repeated DialogueMessageRs messages = 1;
+}
+
+service DialogueMessageService {
+  rpc FindMessages(DialogueMessageSearchRq) returns (DialogueMessageSearchRs);
+  rpc Create(DialogueMessageCreateRq) returns (DialogueMessageRs);
+}
