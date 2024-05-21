@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package name.svetov.grpc;
+package name.svetov.saas.dialogue.grpc;
 
 message DialogueMessageSearchRq {
   string dialogue_id = 1;
