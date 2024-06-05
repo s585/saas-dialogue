@@ -1,0 +1,19 @@
+saas-dialogue-router-001:
+  advertise_uri: saas-dialogue-router-001:3301
+  http_port: 8081
+
+saas-dialogue-shard1-001:
+  advertise_uri: saas-dialogue-shard1-001:3302
+  http_port: 8082
+
+saas-dialogue-shard1-002:
+  advertise_uri: saas-dialogue-shard1-002:3303
+  http_port: 8083
+
+saas-dialogue-shard2-001:
+  advertise_uri: saas-dialogue-shard2-001:3304
+  http_port: 8084
+
+saas-dialogue-shard2-002:
+  advertise_uri: saas-dialogue-shard2-002:3305
+  http_port: 8085

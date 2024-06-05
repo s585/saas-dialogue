@@ -1,0 +1,75 @@
+micronaut:
+  application:
+    name: saas-dialogue
+  server:
+    port: 9797
+    netty:
+      worker:
+        threads: 4
+        event-loop-threads: 2
+  executors:
+    default:
+      type: fixed
+      core-pool-size: 4
+      max-pool-size: 10
+      queue-size: 100
+      virtual: true
+    io:
+      type: cached
+      core-pool-size: 8
+      max-pool-size: 64
+      queue-size: 500
+      virtual: true
+    cpu:
+      type: fixed
+      core-pool-size: 16
+      max-pool-size: 32
+      queue-size: 1000
+      virtual: true
+  otel:
+    traces:
+      exporter: otlp
+    exporter:
+      otlp:
+        endpoint: ${JAEGER_URL:`http://localhost:4317`}
+
+r2dbc:
+  datasources:
+    default:
+      options:
+        driver: pool
+        protocol: postgres
+        autoCommit: true
+        maxSize: 32
+        initialSize: 8
+        poolName: r2dbc-pool
+        registerJmx: true
+      url: ${R2DBC_URL:`r2dbc:postgres://localhost:5432/spacedb`}
+      username: ${PG_USERNAME:postgres}
+      password: ${PG_PASSWORD:password}
+      dialect: postgres
+
+jooq:
+  r2dbc-datasources:
+    sql-dialect: POSTGRES
+
+tarantool:
+  nodes: localhost:3301
+  username: tt_operator
+  password: password
+
+grpc:
+  server:
+    port: 7777
+#    ssl:
+#      private-key: ${DIALOGUE_GRPC_SERVER_PRIVATE_KEY:saas-dialogue-private-key.pem}
+
+rabbitmq:
+  host: ${RABBITMQ_HOST:localhost}
+  port: ${RABBITMQ_PORT:5672}
+  username: rabbitmq
+  password: rabbitmq
+
+dialogue-app:
+  dialogue:
+    impl: ${DIALOGUE_IMPL:postgres}

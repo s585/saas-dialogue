@@ -1,0 +1,66 @@
+credentials:
+  users:
+    tt_operator:
+      password: 'password'
+      roles: [ super ]
+    replicator:
+      password: 'password'
+      roles: [ replication ]
+    storage:
+      password: 'password'
+      roles: [ sharding ]
+
+iproto:
+  advertise:
+    peer:
+      login: replicator
+    sharding:
+      login: storage
+
+replication:
+  failover: election
+
+sharding:
+  bucket_count: 3000
+
+groups:
+  storages:
+    app:
+      module: storage
+    sharding:
+      roles: [ storage ]
+    replication:
+      failover: election
+    replicasets:
+      saas-dialogue-shard1:
+        instances:
+          saas-dialogue-shard1-001:
+            iproto:
+              listen:
+                - uri: saas-dialogue-shard1-001:3302
+          saas-dialogue-shard1-002:
+            iproto:
+              listen:
+                - uri: saas-dialogue-shard1-002:3303
+      saas-dialogue-shard2:
+        instances:
+          saas-dialogue-shard2-001:
+            iproto:
+              listen:
+                - uri: saas-dialogue-shard2-001:3304
+          saas-dialogue-shard2-002:
+            iproto:
+              listen:
+                - uri: saas-dialogue-shard2-002:3305
+  routers:
+    app:
+      module: router
+    sharding:
+      roles: [ router ]
+    replicasets:
+      saas-dialogue-router:
+        instances:
+          saas-dialogue-router-001:
+            iproto:
+              listen:
+                - uri: saas-dialogue-router-001:3301

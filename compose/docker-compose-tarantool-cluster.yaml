@@ -1,0 +1,83 @@
+version: '3.9'
+x-tarantool_common: &tarantool_common
+  build:
+    context: ./db
+    dockerfile: tarantool.Dockerfile
+  restart: always
+  networks:
+    - tarantool
+
+services:
+  saas-dialogue-router-001:
+    <<: *tarantool_common
+    container_name: saas-dialogue-router-001
+    ports:
+      - "3301:3301"
+    environment:
+      - TT_APP_NAME=saas-dialogue
+      - TT_INSTANCE_NAME=saas-dialogue-router-001
+    volumes:
+      - ./db/volumes/saas-dialogue_data:/var/lib/tarantool
+
+  saas-dialogue-shard1-001:
+    <<: *tarantool_common
+    container_name: saas-dialogue-shard1-001
+    ports:
+      - "3302:3302"
+    environment:
+      - TT_APP_NAME=saas-dialogue
+      - TT_INSTANCE_NAME=saas-dialogue-shard1-001
+    volumes:
+      - ./db/volumes/saas-dialogue_data:/var/lib/tarantool
+
+  saas-dialogue-shard1-002:
+    <<: *tarantool_common
+    container_name: saas-dialogue-shard1-002
+    ports:
+      - "3303:3303"
+    environment:
+      - TT_APP_NAME=saas-dialogue
+      - TT_INSTANCE_NAME=saas-dialogue-shard1-002
+    volumes:
+      - ./db/volumes/saas-dialogue_data:/var/lib/tarantool
+
+  saas-dialogue-shard2-001:
+    <<: *tarantool_common
+    container_name: saas-dialogue-shard2-001
+    ports:
+      - "3304:3304"
+    environment:
+      - TT_APP_NAME=saas-dialogue
+      - TT_INSTANCE_NAME=saas-dialogue-shard2-001
+    volumes:
+      - ./db/volumes/saas-dialogue_data:/var/lib/tarantool
+
+  saas-dialogue-shard2-002:
+    <<: *tarantool_common
+    container_name: saas-dialogue-shard2-002
+    ports:
+      - "3305:3305"
+    environment:
+      - TT_APP_NAME=saas-dialogue
+      - TT_INSTANCE_NAME=saas-dialogue-shard2-002
+    volumes:
+      - ./db/volumes/saas-dialogue_data:/var/lib/tarantool
+
+  tarantool_admin:
+    image: quay.io/basis-company/tarantool-admin:latest
+    ports:
+      - "8888:80"
+    environment:
+      - TARANTOOL_TCP_NODELAY=1
+      - TARANTOOL_DATABASE_QUERY=1
+    networks:
+      - tarantool
+
+networks:
+  space-app-network:
+    driver: bridge
+  tarantool:
+    driver: bridge
+
+volumes:
+  saas-dialogue_data:

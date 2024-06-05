@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: 1.0/extensions.sql
+  - include:
+      file: 1.0/dialogue.sql
+  - include:
+      file: 1.0/dialogue_message.sql
+  - include:
+      file: 1.0/dialogue_message_properties.sql

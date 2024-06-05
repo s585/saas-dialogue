@@ -14,8 +14,8 @@
   </parent>
 
   <modules>
-    <module>saas-dialogue-db</module>
     <module>saas-dialogue-app</module>
+    <module>saas-dialogue-db</module>
   </modules>
 
   <repositories>
@@ -32,13 +32,14 @@
     <micronaut.aot.packageName>name.svetov.aot.generated</micronaut.aot.packageName>
     <micronaut.aot.enabled>false</micronaut.aot.enabled>
     <micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>
-    <exec.mainClass>name.svetov.Application</exec.mainClass>
+    <exec.mainClass>name.svetov.java.Application</exec.mainClass>
 
     <micronaut.version>4.3.8</micronaut.version>
     <spring-tx.version>6.0.7</spring-tx.version>
     <spring-security-crypto.version>6.2.1</spring-security-crypto.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+    <protobuf-spi-impl.version>1.44</protobuf-spi-impl.version>
     <postgresql.version>42.7.1</postgresql.version>
     <r2dbc-postgresql.version>1.0.3.RELEASE</r2dbc-postgresql.version>
     <r2dbc-pool.version>1.0.0.RELEASE</r2dbc-pool.version>
@@ -46,6 +47,7 @@
     <jooq.version>3.19.1</jooq.version>
     <cartridge-driver.version>0.13.0</cartridge-driver.version>
     <jakarta.validation-api.version>3.1.0-M1</jakarta.validation-api.version>
+    <annotations-api.version>6.0.53</annotations-api.version>
     <awaitility.version>4.2.0</awaitility.version>
     <jib-maven-plugin.version>3.4.0</jib-maven-plugin.version>
     <maven-resources-plugin.version>3.3.1</maven-resources-plugin.version>
@@ -53,6 +55,8 @@
     <testcontainers.version>1.18.3</testcontainers.version>
     <testcontainers-jooq-codegen-maven-plugin.version>0.0.3</testcontainers-jooq-codegen-maven-plugin.version>
     <groovy-maven-plugin.version>2.1.1</groovy-maven-plugin.version>
+    <protobuf-maven-plugin.version>0.6.1</protobuf-maven-plugin.version>
+    <os-maven-plugin.version>1.7.1</os-maven-plugin.version>
   </properties>
 
   <dependencyManagement>
@@ -138,12 +142,25 @@
         <artifactId>lombok-mapstruct-binding</artifactId>
         <version>${lombok-mapstruct-binding.version}</version>
       </dependency>
+      <dependency>
+        <groupId>no.entur.mapstruct.spi</groupId>
+        <artifactId>protobuf-spi-impl</artifactId>
+        <version>${protobuf-spi-impl.version}</version>
+      </dependency>
+
+      <!--            needed for grpc compilation-->
+      <dependency>
+        <groupId>org.apache.tomcat</groupId>
+        <artifactId>annotations-api</artifactId>
+        <scope>compile</scope>
+        <version>${annotations-api.version}</version>
+      </dependency>
 
       <!--            Tracing-->
       <dependency>
-        <groupId>io.micrometer</groupId>
-        <artifactId>context-propagation</artifactId>
-        <scope>compile</scope>
+        <groupId>io.micronaut.tracing</groupId>
+        <artifactId>micronaut-tracing-opentelemetry-grpc</artifactId>
+        <version>${micronaut.tracing.version}</version>
       </dependency>
 
       <!--            Maven plugins-->
@@ -168,9 +185,14 @@
         <version>${docker-maven-plugin.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.codehaus.gmaven</groupId>
-        <artifactId>groovy-maven-plugin</artifactId>
-        <version>${groovy-maven-plugin.version}</version>
+        <groupId>org.xolstice.maven.plugins</groupId>
+        <artifactId>protobuf-maven-plugin</artifactId>
+        <version>${protobuf-maven-plugin.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>kr.motd.maven</groupId>
+        <artifactId>os-maven-plugin</artifactId>
+        <version>${os-maven-plugin.version}</version>
       </dependency>
 
       <!--            Testing-->
@@ -196,6 +218,19 @@
   <build>
     <pluginManagement>
       <plugins>
+        <plugin>
+          <groupId>kr.motd.maven</groupId>
+          <artifactId>os-maven-plugin</artifactId>
+          <version>${os-maven-plugin.version}</version>
+          <executions>
+            <execution>
+              <phase>initialize</phase>
+              <goals>
+                <goal>detect</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
         <plugin>
           <groupId>io.micronaut.maven</groupId>
           <artifactId>micronaut-maven-plugin</artifactId>
@@ -229,6 +264,11 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+              </path>
+              <path>
+                <groupId>no.entur.mapstruct.spi</groupId>
+                <artifactId>protobuf-spi-impl</artifactId>
+                <version>${protobuf-spi-impl.version}</version>
               </path>
               <path>
                 <groupId>org.mapstruct</groupId>
@@ -297,6 +337,7 @@
               <path>
                 <groupId>io.micronaut.tracing</groupId>
                 <artifactId>micronaut-tracing-opentelemetry-annotation</artifactId>
+                <version>${micronaut.tracing.version}</version>
                 <exclusions>
                   <exclusion>
                     <groupId>io.micronaut</groupId>
@@ -316,11 +357,8 @@
           <artifactId>jib-maven-plugin</artifactId>
           <version>${jib-maven-plugin.version}</version>
         </plugin>
-        <plugin>
-          <groupId>com.github.os72</groupId>
-          <artifactId>protoc-jar-maven-plugin</artifactId>
-        </plugin>
       </plugins>
     </pluginManagement>
   </build>
+
 </project>
